@@ -1,0 +1,79 @@
+# Virtual 系列共用的「網頁版部署到 GitHub Pages」（可重用 workflow）。遊戲 repo 這樣呼叫：
+#
+#   on: { push: { branches: [main] }, workflow_dispatch: {} }
+#   permissions: { contents: read, pages: write, id-token: write }
+#   concurrency: { group: pages, cancel-in-progress: true }
+#   jobs:
+#     pages:
+#       uses: YuutaTsubasa/VirtualCore/.github/workflows/pages.yml@v0.1.0
+#       with:
+#         core-crate: volleyball-core
+#         wasm-crate: volleyball-wasm
+#
+# 網址是 https://yuuta-tsubasa.studio/<repo 名稱>/。
+# 線上房間的配對服務預設用遊戲 src/lib/site.js 裡已部署的網址；要換成別的，在遊戲 repo 的 Variables
+# （Settings → Secrets and variables → Actions → Variables）設 SIGNAL_SERVER。
+name: Deploy web version to GitHub Pages
+
+on:
+  workflow_call:
+    inputs:
+      core-crate:
+        description: crates/ 底下的遊戲引擎 crate 資料夾名稱，例如 volleyball-core
+        type: string
+        required: true
+      wasm-crate:
+        description: crates/ 底下的 WebAssembly crate 資料夾名稱，例如 volleyball-wasm
+        type: string
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            crates/${{ inputs.core-crate }}
+            crates/${{ inputs.wasm-crate }}
+
+      - run: npm ci
+
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      # 先測試（JS 與比賽引擎），沒過就不部署
+      - run: npm test
+
+      # prebuild 會先跑 npm run build:wasm（wasm-pack）
+      - run: npm run build
+        env:
+          PAGES_BASE: /${{ github.event.repository.name }}/
+          VITE_SIGNAL_SERVER: ${{ vars.SIGNAL_SERVER }}
+          # 分享連結用 https（Pages 回報的 base_url 是 http）
+          VITE_WEB_URL: https://yuuta-tsubasa.studio/${{ github.event.repository.name }}/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,15 @@
+{
+  "name": "virtual-core",
+  "version": "0.1.0",
+  "description": "虛擬台麻館系列（Virtual 系列）五款遊戲共用的程式：PC-98 風 FM 音源、WebRTC 線上房間",
+  "license": "MIT",
+  "type": "module",
+  "repository": "github:YuutaTsubasa/VirtualCore",
+  "exports": {
+    "./*": "./src/*"
+  },
+  "files": ["src"],
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  }
+}

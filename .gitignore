@@ -1,0 +1,3 @@
+node_modules/
+# 配對服務（workers/signal）本機 wrangler dev 的暫存
+.wrangler/

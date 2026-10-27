@@ -1,0 +1,16 @@
+{
+  "name": "virtual-signal",
+  "private": true,
+  "description": "Virtual 系列線上房間的配對服務（Cloudflare Workers）；每款遊戲部署成自己名字的 worker",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "deploy:mahjong": "wrangler deploy --name taiwan-mahjong-signal",
+    "deploy:volleyball": "wrangler deploy --name virtual-volleyball-signal",
+    "deploy:quest": "wrangler deploy --name virtual-quest-signal",
+    "deploy:runners": "wrangler deploy --name virtual-runners-signal",
+    "deploy:beat": "wrangler deploy --name virtual-beat-battle-signal"
+  },
+  "devDependencies": {
+    "wrangler": "^4.20.0"
+  }
+}

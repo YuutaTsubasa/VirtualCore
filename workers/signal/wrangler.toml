@@ -1,0 +1,16 @@
+# 線上房間的配對服務（Cloudflare Workers 免費方案），Virtual 系列五款共用這份程式。
+# 每款遊戲部署成自己名字的 worker（網址各自寫在遊戲的 src/lib/site.js），用 package.json 的 deploy:<遊戲>：
+#   cd workers/signal && npm install && npx wrangler login && npm run deploy:volleyball
+# 直接 wrangler deploy 會用下面的 name，只拿來測試。
+name = "virtual-signal-dev"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "SignalRoom"
+
+# 免費方案只能用 SQLite 版的 Durable Object
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["SignalRoom"]
