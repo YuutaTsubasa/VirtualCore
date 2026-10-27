@@ -1,6 +1,6 @@
 # Virtual 系列共通規則
 
-`C:\Users\Shadow\Data\10_Projects\Virtual\` 放「虛擬台麻館」宇宙的五款遊戲，每款一個公開 repo，加上共用程式 `VirtualCore`（本 repo）：
+`%USERPROFILE%\Data\10_Projects\Virtual\` 放「虛擬台麻館」宇宙的五款遊戲，每款一個公開 repo，加上共用程式 `VirtualCore`（本 repo）：
 
 | 資料夾 | 遊戲 | 預設分支 | Rust crate 前綴 | dev 埠 |
 | --- | --- | --- | --- | --- |
@@ -13,7 +13,7 @@
 
 技術都一樣：Tauri v2＋Svelte 5＋Vite 6，遊戲引擎是 Rust（網頁版用 `wasm-pack` 編成 WebAssembly），PC-98 風 FM 音源，WebRTC（Cloudflare Worker 配對）與區網 WebSocket 開房，中／英／日三語，五種畫風。
 
-這份檔案是**系列共通規則**（正本在 VirtualCore；`Virtual\CLAUDE.md` 匯入它，Claude 在任何一款 repo 裡都讀得到）；電腦本身與 AI 工作階段的規則在 `C:\Users\Shadow\Data\10_Projects\tailsmachine-ops\AGENTS.md`，進度寫在那個 repo 的 `projects/virtual/STATUS.md`。各遊戲 repo 自己的 README 寫該遊戲的玩法與建置細節。
+這份檔案是**系列共通規則**（正本在 VirtualCore；`Virtual\CLAUDE.md` 匯入它，Claude 在任何一款 repo 裡都讀得到）；電腦本身與 AI 工作階段的規則在 `%USERPROFILE%\Data\10_Projects\tailsmachine-ops\AGENTS.md`，進度寫在那個 repo 的 `projects/virtual/STATUS.md`。各遊戲 repo 自己的 README 寫該遊戲的玩法與建置細節。
 
 ## 開始工作前
 
