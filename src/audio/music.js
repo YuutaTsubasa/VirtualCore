@@ -16,8 +16,8 @@
 
 import { audioContext, buses, fmNote, ssgNote, drum, parseMML, chordNotes } from './synth.js';
 
-/** 把曲子展開成依時間排序的事件 */
-function compile(song) {
+/** 把曲子展開成依時間排序的事件（節奏遊戲的譜面產生器也用這個） */
+export function compile(song) {
   const events = [];
   let length = 0;
   for (const tr of song.tracks) {
@@ -102,9 +102,13 @@ export class Player {
     this.out = null;
   }
 
-  play(song, { onEnd } = {}) {
+  /**
+   * at：從哪個 AudioContext 時間開始（節奏遊戲要跟譜面對齊）；repeat：不循環的曲子整首重複幾次。
+   * 回傳實際開始的時間（AudioContext 秒數）。
+   */
+  play(song, { onEnd, at, repeat = 1 } = {}) {
     const ctx = audioContext();
-    if (!ctx) return;
+    if (!ctx) return null;
     this.stop(0);
     const { events, length } = compiledSong(song);
     const spb = 60 / song.bpm;
@@ -112,14 +116,22 @@ export class Player {
     out.gain.value = song.gain ?? 1;
     out.connect(buses.bgm);
     this.out = out;
-    let start = ctx.currentTime + 0.08;
+    let start = at ?? ctx.currentTime + 0.08;
+    const first = start;
     let idx = 0;
     let ended = false;
+    let left = repeat - 1;
     const tick = () => {
       const ahead = ctx.currentTime + 0.18;
       for (;;) {
         if (idx >= events.length) {
-          if (song.loop) {
+          if (song.loop && repeat === 1) {
+            start += length * spb;
+            idx = 0;
+            continue;
+          }
+          if (left > 0) {
+            left--;
             start += length * spb;
             idx = 0;
             continue;
@@ -145,6 +157,7 @@ export class Player {
     };
     tick();
     this.timer = setInterval(tick, 25);
+    return first;
   }
 
   stop(fade = 0.4) {
