@@ -5,10 +5,11 @@
 #   concurrency: { group: pages, cancel-in-progress: true }
 #   jobs:
 #     pages:
-#       uses: YuutaTsubasa/VirtualCore/.github/workflows/pages.yml@v0.3.0
+#       uses: YuutaTsubasa/VirtualCore/.github/workflows/pages.yml@v0.4.0
 #       with:
 #         core-crate: volleyball-core
 #         wasm-crate: volleyball-wasm
+#         static-site: true   # 選填：台麻用，建置時設 VITE_STATIC_SITE=1（網頁版藏掉區網開房）
 #
 # 網址是 https://yuuta-tsubasa.studio/<repo 名稱>/。
 # 線上房間的配對服務預設用遊戲 src/lib/site.js 裡已部署的網址；要換成別的，在遊戲 repo 的 Variables
@@ -26,6 +27,10 @@ on:
         description: crates/ 底下的 WebAssembly crate 資料夾名稱，例如 volleyball-wasm
         type: string
         required: true
+      static-site:
+        description: 建置時設 VITE_STATIC_SITE=1（遊戲自己判斷要藏掉哪些只有 App／伺服器才有的功能，例如台麻的區網開房）
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -63,6 +68,7 @@ jobs:
           VITE_SIGNAL_SERVER: ${{ vars.SIGNAL_SERVER }}
           # 分享連結用 https（Pages 回報的 base_url 是 http）
           VITE_WEB_URL: https://yuuta-tsubasa.studio/${{ github.event.repository.name }}/
+          VITE_STATIC_SITE: ${{ inputs.static-site && '1' || '' }}
 
       - uses: actions/upload-pages-artifact@v3
         with:
