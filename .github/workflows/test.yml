@@ -15,3 +15,20 @@ jobs:
         with:
           node-version: 22
       - run: npm test
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            crates/virtual-room
+            crates/virtual-lan
+      - run: cargo test --manifest-path crates/virtual-room/Cargo.toml
+      # 房間要能編成 WebAssembly（線上房間的房主在瀏覽器裡跑）
+      - run: cargo build --manifest-path crates/virtual-room/Cargo.toml --target wasm32-unknown-unknown
+      - run: cargo build --manifest-path crates/virtual-lan/Cargo.toml

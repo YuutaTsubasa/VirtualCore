@@ -14,9 +14,11 @@
 | `src/net/site.js` | 房號、分享連結、配對服務網址的設定 | 遊戲的 `src/lib/site.js` 用 `signalServer(env.VITE_SIGNAL_SERVER, 預設網址)` |
 | `src/input/controls.js` | 手把／鍵盤操作選單的純函式：手把轉成 Arrow／A／B／Start／LB／RB 指令（按住會連發）、非標準手把的十字鍵（hat 軸、axes 6／7）、焦點往哪個按鈕移、秘技序列、拉桿與虛擬鍵盤 | `import { gamepadCommands, padDpad } from 'virtual-core/input/controls.js'`；畫面那側（`Controls.svelte`）留在遊戲 |
 | `src/i18n/lang.js` | 多國語言的純函式：語言清單、偵測／存取語言、字典合併、`translate`（原文當 key）、伺服器訊息比對、網頁 lang／標題。沒有 Svelte rune，字典與目前語言的 `$state` 留在遊戲的 `i18n.svelte.js` | `import { translate, loadLang, mergeDicts } from 'virtual-core/i18n/lang.js'` |
+| `crates/virtual-room/` | Rust：連線房間（不碰網路，可編成 WebAssembly）。`Lobby`（座位、房主、聊天、入席／離席／斷線、電腦補位）、`protocol::handle`（hello／sit／input／chat／host 指令）、`host::HostRoom`（線上房間的房主）、`Difficulty`。遊戲實作 `Game`（座位數、提示文字、角色、設定）與 `RoomGame`（開始、每格前進、輸入、自己的房主指令） | `virtual-room = { git = "https://github.com/YuutaTsubasa/VirtualCore", tag = "v0.5.0" }`；遊戲的 `Room` 放一個 `Lobby` 加比賽狀態 |
+| `crates/virtual-lan/` | Rust：區網房間伺服器（axum，`/ws`＋網頁靜態檔，每秒 60 格廣播）。房主的 App 內建或 `npm run server` 單獨跑 | `virtual_lan::start(port, room, assets, "虛擬排球王伺服器")` |
 | `workers/signal/` | 配對服務（Cloudflare Workers＋Durable Object），只轉送 offer／answer／ICE | 每款部署成自己名字的 worker：`npm --prefix workers/signal run deploy:volleyball` |
-| `.github/workflows/build-apps.yml` | 可重用 workflow：Windows／Linux／macOS×2／Android／iOS 模擬器打包，`v*` tag 附到 Release | `uses: YuutaTsubasa/VirtualCore/.github/workflows/build-apps.yml@v0.4.0` |
-| `.github/workflows/pages.yml` | 可重用 workflow：測試後把網頁版部署到 GitHub Pages | `uses: YuutaTsubasa/VirtualCore/.github/workflows/pages.yml@v0.4.0` |
+| `.github/workflows/build-apps.yml` | 可重用 workflow：Windows／Linux／macOS×2／Android／iOS 模擬器打包，`v*` tag 附到 Release | `uses: YuutaTsubasa/VirtualCore/.github/workflows/build-apps.yml@v0.5.0` |
+| `.github/workflows/pages.yml` | 可重用 workflow：測試後把網頁版部署到 GitHub Pages | `uses: YuutaTsubasa/VirtualCore/.github/workflows/pages.yml@v0.5.0` |
 
 用法範例寫在各 workflow 檔案的開頭。
 
@@ -24,17 +26,32 @@
 
 ```jsonc
 // package.json
-"dependencies": { "virtual-core": "github:YuutaTsubasa/VirtualCore#v0.4.0" }
+"dependencies": { "virtual-core": "github:YuutaTsubasa/VirtualCore#v0.5.0" }
 ```
 
-npm 直接從 GitHub 裝這個 tag，不發佈到 npm；`package-lock.json` 會記下 commit，建置可以重現。`.svelte`／`.js` 原始碼由遊戲自己的 Vite 編譯。
+```toml
+# crates/<遊戲>-core/Cargo.toml、crates/<遊戲>-wasm/Cargo.toml
+virtual-room = { git = "https://github.com/YuutaTsubasa/VirtualCore", tag = "v0.5.0" }
+# src-tauri/Cargo.toml
+virtual-lan = { git = "https://github.com/YuutaTsubasa/VirtualCore", tag = "v0.5.0" }
+```
 
-本機同時改 VirtualCore 和遊戲時，在遊戲資料夾 `npm install ../VirtualCore` 暫時換成本機版本（這個改動不要 commit），改完、VirtualCore 打好 tag 再換回去。
+npm 直接從 GitHub 裝這個 tag，不發佈到 npm；`package-lock.json`／`Cargo.lock` 會記下 commit，建置可以重現。`.svelte`／`.js` 原始碼由遊戲自己的 Vite 編譯。
+
+本機同時改 VirtualCore 和遊戲時，在遊戲資料夾 `npm install ../VirtualCore` 暫時換成本機版本；Rust 在遊戲根目錄放 `.cargo/config.toml`（不要 commit）：
+
+```toml
+[patch."https://github.com/YuutaTsubasa/VirtualCore"]
+virtual-room = { path = "../VirtualCore/crates/virtual-room" }
+virtual-lan = { path = "../VirtualCore/crates/virtual-lan" }
+```
+
+改完、VirtualCore 打好 tag 再換回去。
 
 ## 發版
 
-1. 改動走 PR，`npm test` 通過。
-2. 合併後打 tag：`git tag v0.4.0 && git push origin v0.4.0`。npm 套件與可重用 workflow 用同一個 tag。
+1. 改動走 PR，`npm test` 與 Rust 的 `cargo test`（`crates/virtual-room`）通過。
+2. 合併後打 tag：`git tag v0.5.0 && git push origin v0.5.0`。npm 套件與可重用 workflow 用同一個 tag。
 3. 各遊戲各開一個 PR，把 `package.json` 和 workflow 的版本改到新 tag。
 
 ## 授權

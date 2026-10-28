@@ -1,3 +1,6 @@
 node_modules/
 # 配對服務（workers/signal）本機 wrangler dev 的暫存
 .wrangler/
+# Rust crates 的建置輸出
+target/
+crates/*/Cargo.lock
