@@ -82,6 +82,15 @@ pub trait RoomGame {
     fn reset_to_lobby(&mut self);
     /// 玩家的輸入訊息（`input_type()` 那種訊息）
     fn input(&mut self, seat: usize, msg: &Value);
+    /// 有人斷線（座位留著，帶 token 回來可以拿回）。預設是大廳的：比賽中由電腦代打。
+    /// 比賽在各自電腦上跑的遊戲（跑跑樂、音鬥樂）電腦接不了手，改成這一場算棄權。
+    fn disconnect(&mut self, seat: usize) {
+        self.lobby_mut().disconnect(seat);
+    }
+    /// 有人離席（自己離開或房主移除）。預設是大廳的：比賽中換成電腦接手。
+    fn remove_seat(&mut self, seat: usize) -> Result<(), String> {
+        self.lobby_mut().remove_seat(seat)
+    }
     /// 遊戲自己的房主指令（例如接關、下一關）；不認得就回 None
     fn host_command(&mut self, _cmd: &str, _msg: &Value) -> Option<Result<(), String>> {
         None

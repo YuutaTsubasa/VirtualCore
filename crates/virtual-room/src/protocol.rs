@@ -34,11 +34,11 @@ pub fn frame_message(state: &Value) -> Value {
     json!({"type": "frame", "state": state})
 }
 
-/// 連線中斷：比賽中由電腦代打
+/// 連線中斷（比賽中怎麼處理看遊戲的 `RoomGame::disconnect`）
 pub fn drop_conn<R: RoomGame>(room: &mut R, conn: &mut Conn) -> bool {
     match conn.seat.take() {
         Some(s) => {
-            room.lobby_mut().disconnect(s);
+            room.disconnect(s);
             true
         }
         None => false,
@@ -67,7 +67,7 @@ pub fn handle<R: RoomGame>(room: &mut R, host_key: &str, conn: &mut Conn, v: &Va
                 conn.is_host = !k.is_empty() && k == host_key;
             }
             if let Some(s) = conn.seat.take() {
-                room.lobby_mut().disconnect(s);
+                room.disconnect(s);
             }
             // 帶著 token 回來：拿回原本的座位
             let token = str_of("token");
@@ -104,7 +104,7 @@ pub fn handle<R: RoomGame>(room: &mut R, host_key: &str, conn: &mut Conn, v: &Va
         }
         "leave" => {
             if let Some(s) = conn.seat.take() {
-                let _ = room.lobby_mut().remove_seat(s);
+                let _ = room.remove_seat(s);
             }
             (vec![welcome(conn, None)], true)
         }
@@ -121,7 +121,7 @@ pub fn handle<R: RoomGame>(room: &mut R, host_key: &str, conn: &mut Conn, v: &Va
                     room.lobby_mut().add_bot(seat, d).map(|_| ())
                 }
                 "remove" => match seat {
-                    Some(s) if Some(s) != room.lobby().host_seat => room.lobby_mut().remove_seat(s),
+                    Some(s) if Some(s) != room.lobby().host_seat => room.remove_seat(s),
                     _ => Err("不能移除這個座位".into()),
                 },
                 "settings" => {

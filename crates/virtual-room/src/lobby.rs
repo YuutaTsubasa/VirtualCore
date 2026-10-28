@@ -179,24 +179,34 @@ impl<G: Game> Lobby<G> {
 
     /// 離開座位（玩家自己離開或房主移除）。比賽中就換成電腦接手。
     pub fn remove_seat(&mut self, seat: usize) -> Result<(), String> {
-        let playing = self.playing;
+        if !self.playing {
+            return self.vacate(seat).map(|_| ());
+        }
         let Some(s) = self.seats.get_mut(seat).and_then(|s| s.as_mut()) else {
             return Err("這個座位沒有人".into());
         };
         let name = s.name.clone();
-        if playing {
-            s.kind = SeatKind::Bot;
-            s.token.clear();
-            s.connected = true;
-            s.name = format!("電腦（代打 {}）", name);
-        } else {
-            self.seats[seat] = None;
-        }
+        s.kind = SeatKind::Bot;
+        s.token.clear();
+        s.connected = true;
+        s.name = format!("電腦（代打 {}）", name);
         if self.host_seat == Some(seat) {
             self.host_seat = None;
         }
         self.sys(format!("{} 離開了座位", name));
         Ok(())
+    }
+
+    /// 把座位清空（比賽中也一樣，不找電腦接手），回傳原本的名字
+    pub fn vacate(&mut self, seat: usize) -> Result<String, String> {
+        let Some(s) = self.seats.get_mut(seat).and_then(|s| s.take()) else {
+            return Err("這個座位沒有人".into());
+        };
+        if self.host_seat == Some(seat) {
+            self.host_seat = None;
+        }
+        self.sys(format!("{} 離開了座位", s.name));
+        Ok(s.name)
     }
 
     pub fn set_character(&mut self, seat: usize, id: &str) -> Result<(), String> {
