@@ -4,7 +4,7 @@
 #   permissions: { contents: write }
 #   jobs:
 #     build:
-#       uses: YuutaTsubasa/VirtualCore/.github/workflows/build-apps.yml@v0.5.0
+#       uses: YuutaTsubasa/VirtualCore/.github/workflows/build-apps.yml@v0.6.0
 #       secrets: inherit   # ANDROID_KEYSTORE_BASE64 等簽章 secrets
 #       with:
 #         app-name: VirtualVolleyballKing

@@ -222,3 +222,67 @@ fn host_room_routes_messages_frames_and_lobby_updates() {
     host.disconnect(7);
     assert!(!host.room.lobby.seats[1].as_ref().unwrap().connected);
 }
+
+/// 比賽在各自電腦上跑的遊戲（跑跑樂、音鬥樂）：斷線、離席都算棄權，不找電腦接手
+#[derive(Default)]
+struct RaceRoom {
+    inner: ToyRoom,
+    retired: Vec<usize>,
+}
+
+impl RoomGame for RaceRoom {
+    type Rules = Toy;
+    fn lobby(&self) -> &Lobby<Toy> {
+        &self.inner.lobby
+    }
+    fn lobby_mut(&mut self) -> &mut Lobby<Toy> {
+        &mut self.inner.lobby
+    }
+    fn start(&mut self) -> Result<(), String> {
+        self.inner.start()
+    }
+    fn reset_to_lobby(&mut self) {
+        self.inner.reset_to_lobby()
+    }
+    fn input(&mut self, seat: usize, msg: &Value) {
+        self.inner.input(seat, msg)
+    }
+    fn tick(&mut self) -> bool {
+        self.inner.tick()
+    }
+    fn frame(&self) -> Option<Value> {
+        self.inner.frame()
+    }
+    fn just_ended(&mut self) -> bool {
+        self.inner.just_ended()
+    }
+    fn disconnect(&mut self, seat: usize) {
+        if let Some(s) = self.inner.lobby.seats[seat].as_mut() {
+            s.connected = false;
+        }
+        self.retired.push(seat);
+    }
+    fn remove_seat(&mut self, seat: usize) -> Result<(), String> {
+        self.retired.push(seat);
+        self.inner.lobby.vacate(seat).map(|_| ())
+    }
+}
+
+#[test]
+fn games_can_retire_instead_of_handing_seats_to_bots() {
+    let mut room = RaceRoom::default();
+    let (mut host, mut guest, mut third) = (Conn::default(), Conn::default(), Conn::default());
+    handle(&mut room, "key", &mut host, &json!({"type": "hello", "name": "房主", "host_key": "key"}));
+    handle(&mut room, "key", &mut guest, &json!({"type": "hello", "name": "客人"}));
+    handle(&mut room, "key", &mut third, &json!({"type": "hello", "name": "第三位"}));
+    handle(&mut room, "key", &mut host, &json!({"type": "host", "cmd": "start"}));
+    assert!(drop_conn(&mut room, &mut guest));
+    let s = room.lobby().seats[1].as_ref().unwrap();
+    assert!(s.kind == SeatKind::Human && !s.connected, "斷線不換成電腦");
+    handle(&mut room, "key", &mut third, &json!({"type": "leave"}));
+    assert!(room.lobby().seats[2].is_none(), "比賽中離席也直接空出座位");
+    assert_eq!(room.retired, vec![1, 2]);
+    let (_, changed) = handle(&mut room, "key", &mut host, &json!({"type": "host", "cmd": "remove", "seat": 1}));
+    assert!(changed && room.lobby().seats[1].is_none(), "房主移除也走遊戲的 remove_seat");
+    assert_eq!(room.lobby_mut().vacate(1).unwrap_err(), "這個座位沒有人");
+}

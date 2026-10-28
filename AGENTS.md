@@ -26,7 +26,7 @@
 **共通層**（五款都有、行為應該一樣）：
 
 - 音訊：FM 音源 `audio/synth.js`、播放器 `audio/music.js`、音效機制 `audio/sound.svelte.js`、`game/audio.js`
-- 連線：`p2p.js`、`net.svelte.js`、`local/host-worker.js`、`workers/signal/`、Rust `protocol.rs`、`room.rs` 的座位／房主／聊天／補電腦、`src-tauri/src/server.rs`（排球、闖天下已改用 VirtualCore 的 `virtual-room`／`virtual-lan`；跑跑樂、音鬥樂還是自己的一份）
+- 連線：`p2p.js`、`net.svelte.js`、`local/host-worker.js`、`workers/signal/`、Rust `protocol.rs`、`room.rs` 的座位／房主／聊天／補電腦、`src-tauri/src/server.rs`（四款都改用 VirtualCore 的 `virtual-room`／`virtual-lan`；跑跑樂、音鬥樂覆寫 `disconnect`／`remove_seat`，比賽中斷線算棄權）
 - 大廳 UI：`Lobby`、`RoomEntry`（骨架共通，房間規則設定是遊戲層）
 - 多國語系：`i18n.svelte.js`（純函式已在 VirtualCore 的 `i18n/lang.js`，遊戲那份只留字典、`$state`、伺服器訊息句型）、`i18n/*/ui.js` 的共通字串、`i18n/*/characters.js`
 - 輸入：`input-controls.js`（手把／鍵盤焦點導覽，已在 VirtualCore 的 `input/controls.js`；遊戲中的十字鍵也要用它的 `padDpad`，才收得到非標準手把）、`Controls`、`ControlsKeyboard`、`game/input.js` 的鍵位設定
