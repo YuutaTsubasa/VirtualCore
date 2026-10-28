@@ -28,7 +28,7 @@
 - 音訊：FM 音源 `audio/synth.js`、播放器 `audio/music.js`、音效機制 `audio/sound.svelte.js`、`game/audio.js`
 - 連線：`p2p.js`、`net.svelte.js`、`local/host-worker.js`、`workers/signal/`、Rust `protocol.rs`、`room.rs` 的座位／房主／聊天／補電腦、`src-tauri/src/server.rs`
 - 大廳 UI：`Lobby`、`RoomEntry`（骨架共通，房間規則設定是遊戲層）
-- 多國語系：`i18n.svelte.js`、`i18n/*/ui.js` 的共通字串、`i18n/*/characters.js`
+- 多國語系：`i18n.svelte.js`（純函式已在 VirtualCore 的 `i18n/lang.js`，遊戲那份只留字典、`$state`、伺服器訊息句型）、`i18n/*/ui.js` 的共通字串、`i18n/*/characters.js`
 - 輸入：`input-controls.js`（手把／鍵盤焦點導覽，已在 VirtualCore 的 `input/controls.js`；遊戲中的十字鍵也要用它的 `padDpad`，才收得到非標準手把）、`Controls`、`ControlsKeyboard`、`game/input.js` 的鍵位設定
 - 畫風：`art-style.svelte.js`、`style-assets.js`、`skins.css`、五種畫風的名稱與切換
 - 角色：十一位角色的 id、名字、簡介、顏色、立繪（`public/characters/`）；阿翼是隱藏角色
@@ -61,7 +61,7 @@
 - 先在**一款**做好並測過（通常選差異最小、最新的那款；連線相關選 `VirtualVolleyball`，它是 Virtual 範本的源頭），再移植到其他款。
 - 移植時以盤點表為準：🟢 的檔案可以整份覆蓋（只改名稱、網址）；🟡 的檔案只移植那一段改動，不要整份覆蓋，否則會蓋掉該款自己加的東西。
 - 每款一個 PR，標題用同一個前綴（例：`[common] 手把熱插拔提示`），內文連到追蹤 issue。全部合併、各自發版後，追蹤 issue 才關。
-- 台麻（TaiwanMahjong）比其他四款舊一輪、結構不同：共通功能要另外評估怎麼接，不能直接覆蓋檔案。
+- 台麻（TaiwanMahjong）比其他四款舊一輪、結構不同：從 0.8.0 起接 VirtualCore 的音源、播放器、WebRTC、配對服務、手把、i18n、CI；區網伺服器（`mahjong-server`，含 HTTP API／MCP）與 Rust 房間是自己的。共通功能要另外評估怎麼接，不能直接覆蓋檔案。
 
 ## 標籤與跨 repo 追蹤
 
