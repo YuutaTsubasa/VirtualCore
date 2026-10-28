@@ -29,7 +29,7 @@
 - 連線：`p2p.js`、`net.svelte.js`、`local/host-worker.js`、`workers/signal/`、Rust `protocol.rs`、`room.rs` 的座位／房主／聊天／補電腦、`src-tauri/src/server.rs`
 - 大廳 UI：`Lobby`、`RoomEntry`（骨架共通，房間規則設定是遊戲層）
 - 多國語系：`i18n.svelte.js`、`i18n/*/ui.js` 的共通字串、`i18n/*/characters.js`
-- 輸入：`input-controls.js`（手把／鍵盤焦點導覽）、`Controls`、`ControlsKeyboard`、`game/input.js` 的鍵位設定
+- 輸入：`input-controls.js`（手把／鍵盤焦點導覽，已在 VirtualCore 的 `input/controls.js`；遊戲中的十字鍵也要用它的 `padDpad`，才收得到非標準手把）、`Controls`、`ControlsKeyboard`、`game/input.js` 的鍵位設定
 - 畫風：`art-style.svelte.js`、`style-assets.js`、`skins.css`、五種畫風的名稱與切換
 - 角色：十一位角色的 id、名字、簡介、顏色、立繪（`public/characters/`）；阿翼是隱藏角色
 - 設定與存檔機制：`SettingsDialog` 的共通項目（語言、音量、畫風、手把）、`localStorage` 的 key 命名
