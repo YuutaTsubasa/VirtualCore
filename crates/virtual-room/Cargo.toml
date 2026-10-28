@@ -1,0 +1,15 @@
+[package]
+name = "virtual-room"
+version = "0.5.0"
+description = "Virtual 系列共用的連線房間：座位、房主、聊天、電腦補位與連線訊息（區網伺服器與線上房間共用，不碰網路）"
+license = "MIT"
+edition = "2021"
+rust-version = "1.89"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rand = { version = "0.8", features = ["small_rng"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.2", features = ["js"] }
