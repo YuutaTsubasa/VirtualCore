@@ -1,6 +1,6 @@
 [package]
 name = "virtual-lan"
-version = "0.6.0"
+version = "0.7.0"
 description = "Virtual 系列共用的區網房間伺服器（axum WebSocket＋網頁靜態檔），房間邏輯在 virtual-room"
 license = "MIT"
 edition = "2021"

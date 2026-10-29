@@ -1,0 +1,43 @@
+{
+  "VSans": {
+    "note": "黑體（取代微軟正黑體）：Noto Sans TC",
+    "license": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstc/OFL.txt",
+    "faces": [{ "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstc/NotoSansTC%5Bwght%5D.ttf", "weight": "100 900" }]
+  },
+  "VKai": {
+    "note": "楷書（取代標楷體）：霞鶩文楷 TC",
+    "license": "https://raw.githubusercontent.com/google/fonts/main/ofl/lxgwwenkaitc/OFL.txt",
+    "faces": [
+      { "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/lxgwwenkaitc/LXGWWenKaiTC-Regular.ttf", "weight": "100 500" },
+      { "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/lxgwwenkaitc/LXGWWenKaiTC-Bold.ttf", "weight": "600 900" }
+    ]
+  },
+  "VPixel": {
+    "note": "像素字（取代細明體，PC-98／Game Boy 畫風）：俐方體 11 號",
+    "license": "https://raw.githubusercontent.com/ACh-K/Cubic-11/main/OFL.txt",
+    "faces": [{ "url": "https://raw.githubusercontent.com/ACh-K/Cubic-11/main/fonts/ttf/Cubic_11.ttf", "weight": "100 900" }]
+  },
+  "VMono": {
+    "note": "等寬（MS-DOS 畫風的英數）：Cascadia Mono",
+    "license": "https://raw.githubusercontent.com/google/fonts/main/ofl/cascadiamono/OFL.txt",
+    "faces": [{ "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/cascadiamono/CascadiaMono%5Bwght%5D.ttf", "weight": "200 700" }]
+  },
+  "VSerif": {
+    "note": "英文襯線體（取代 Georgia，英文介面的標題）：Noto Serif",
+    "license": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserif/OFL.txt",
+    "faces": [{ "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserif/NotoSerif%5Bwdth,wght%5D.ttf", "weight": "100 900" }]
+  },
+  "VSansJP": {
+    "note": "日文黑體（取代游ゴシック）：Noto Sans JP",
+    "license": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/OFL.txt",
+    "faces": [{ "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf", "weight": "100 900" }]
+  },
+  "VKaiJP": {
+    "note": "日文教科書體（日文介面的標題，取代游明朝）：Klee One",
+    "license": "https://raw.githubusercontent.com/google/fonts/main/ofl/kleeone/OFL.txt",
+    "faces": [
+      { "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/kleeone/KleeOne-Regular.ttf", "weight": "100 500" },
+      { "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/kleeone/KleeOne-SemiBold.ttf", "weight": "600 900" }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 [package]
 name = "virtual-room"
-version = "0.6.0"
+version = "0.7.0"
 description = "Virtual 系列共用的連線房間：座位、房主、聊天、電腦補位與連線訊息（區網伺服器與線上房間共用，不碰網路）"
 license = "MIT"
 edition = "2021"
