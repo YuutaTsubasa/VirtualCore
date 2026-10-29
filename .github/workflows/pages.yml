@@ -5,7 +5,7 @@
 #   concurrency: { group: pages, cancel-in-progress: true }
 #   jobs:
 #     pages:
-#       uses: YuutaTsubasa/VirtualCore/.github/workflows/pages.yml@v0.6.0
+#       uses: YuutaTsubasa/VirtualCore/.github/workflows/pages.yml@v0.7.0
 #       with:
 #         core-crate: volleyball-core
 #         wasm-crate: volleyball-wasm

@@ -1,6 +1,6 @@
 {
   "name": "virtual-core",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "虛擬台麻館系列（Virtual 系列）五款遊戲共用的程式：PC-98 風 FM 音源、WebRTC 線上房間、手把焦點導覽、多國語言",
   "license": "MIT",
   "type": "module",
