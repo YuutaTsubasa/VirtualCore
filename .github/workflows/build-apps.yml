@@ -177,6 +177,43 @@ jobs:
       # init 產生的專案用的是 Tauri 預設圖示，換成我們的
       - run: npx tauri icon src-tauri/icons/icon.png
 
+      # 遊戲要全螢幕：init 產生的 MainActivity 只有 edge-to-edge，狀態列和導覽列還在（畫面還被它們蓋住），
+      # 改成隱藏兩者；從邊緣滑動會暫時叫出來，回到遊戲（拿回焦點）再藏起來
+      - name: 全螢幕（隱藏狀態列與導覽列）
+        run: |
+          f=$(find src-tauri/gen/android -name MainActivity.kt | head -1)
+          pkg=$(grep -m1 '^package ' "$f")
+          cat > "$f" <<EOF
+          $pkg
+
+          import android.os.Bundle
+          import androidx.activity.enableEdgeToEdge
+          import androidx.core.view.WindowCompat
+          import androidx.core.view.WindowInsetsCompat
+          import androidx.core.view.WindowInsetsControllerCompat
+
+          class MainActivity : TauriActivity() {
+            override fun onCreate(savedInstanceState: Bundle?) {
+              enableEdgeToEdge()
+              super.onCreate(savedInstanceState)
+              hideSystemBars()
+            }
+
+            override fun onWindowFocusChanged(hasFocus: Boolean) {
+              super.onWindowFocusChanged(hasFocus)
+              if (hasFocus) hideSystemBars()
+            }
+
+            private fun hideSystemBars() {
+              WindowCompat.getInsetsController(window, window.decorView).apply {
+                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                hide(WindowInsetsCompat.Type.systemBars())
+              }
+            }
+          }
+          EOF
+          cat "$f"
+
       - run: npx tauri android build --apk
 
       # 有設定 ANDROID_KEYSTORE_BASE64 等 secrets 就用固定的金鑰簽章（之後可以直接覆蓋安裝升級）；
